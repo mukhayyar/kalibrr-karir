@@ -59,7 +59,7 @@ if($err) {
         $pageHTML .= "</div>";
         $pageHTML .= "<div class='col-md-8'>";
         $pageHTML .= "<div class='card-body'>";
-        $pageHTML .= "<h3> <a href='".$job->name."</a></h3>"; 
+        $pageHTML .= "<h3> <a href='".$url.$job->name."</a></h3>"; 
         $old_date_timestamp = strtotime($job->application_end_date);
         $new_date = date('d M', $old_date_timestamp);   
         $pageHTML .= "<p  class='card-text'>Recruiter last seen ".timeago($job->es_recruiter_last_seen)."</p>";
