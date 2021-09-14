@@ -27,7 +27,7 @@ function timeago($date) {
     $currentTime = time();
     if($currentTime >= $timestamp) {
          $diff     = time()- $timestamp;
-         for($i = 0; $diff >= $length[$i] && $i < count($length)-1; $i++) {
+         for($i = 0; $diff >= $length[$i] && $i <  count($length)-1; $i++) {
          $diff = $diff / $length[$i];
          }
 
@@ -49,6 +49,7 @@ if($err) {
     $pageHTML = "<div class='container'>";
 
     foreach($jsonObj->jobs as $job){
+        $url = "https://www.kalibrr.id/c/".$job->company->code."/jobs/".$job->id."/".$job->slug."'>";
         $pageHTML .= "<div class='card border-danger m-4'>";
         $pageHTML .= "<div class='row g-0'>";
         $pageHTML .= "<div class='col-md-4 p-4'>";
@@ -58,7 +59,7 @@ if($err) {
         $pageHTML .= "</div>";
         $pageHTML .= "<div class='col-md-8'>";
         $pageHTML .= "<div class='card-body'>";
-        $pageHTML .= "<h3>".$job->name."</h3>"; 
+        $pageHTML .= "<h3> <a href='".$job->name."</a></h3>"; 
         $old_date_timestamp = strtotime($job->application_end_date);
         $new_date = date('d M', $old_date_timestamp);   
         $pageHTML .= "<p  class='card-text'>Recruiter last seen ".timeago($job->es_recruiter_last_seen)."</p>";
