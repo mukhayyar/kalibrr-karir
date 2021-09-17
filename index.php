@@ -8,14 +8,20 @@ if(!isset($_GET["text"]))
 } else {
     $textQuery = $_GET["text"];
 }
-if(!isset($_GET["level"]))
+if(!isset($_GET["tenure"]))
 {
-    $levelQuery = "";
+    $tenureQuery = "";
 } else {
-    $levelQuery = $_GET["level"];
+    $tenureQuery = implode(",",$_GET["tenure"]);
+}
+if(!isset($_GET["work_experience"]))
+{
+    $workQuery = "";
+} else {
+    $workQuery = implode(",",$_GET["work_experience"]);
 }
 curl_setopt_array($curl, array(
-  CURLOPT_URL => 'www.kalibrr.com/api/job_board/search?country=Indonesia&function=Legal&level='.$levelQuery.'&text='.$textQuery,
+  CURLOPT_URL => 'www.kalibrr.com/api/job_board/search?country=Indonesia&function=Legal&work_experience='.$workQuery.'&text='.$textQuery." ".$tenureQuery,
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
@@ -61,8 +67,68 @@ if($err) {
     $pageHTML .= '
         <form>
         <div class="input-group mb-3">
-        <input type="text" class="form-control" name="text" placeholder="Cari">
-        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Button</button>
+        <input type="text" name="text" class="form-control" placeholder="Cari Kerja">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Tenure</button>
+        <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+        <input class="form-check-input" type="checkbox" name="tenure[]" value="Full time" id="tenure1">
+        <label class="form-check-label" for="tenure1">
+                Full time
+                </label>
+                </li>
+                <li>
+                <input class="form-check-input" type="checkbox" name="tenure[]" value="Part time" id="tenure2>
+                <label class="form-check-label" for="tenure2">
+                Part time
+                </label>
+                </li>
+                <li>
+                <input class="form-check-input" type="checkbox" name="tenure[]" value="Contractual" id="tenure3>
+                <label class="form-check-label" for="tenure3">
+                Contractual
+                </label>
+                </li>
+                <li>
+                <input class="form-check-input" type="checkbox" name="tenure[]" value="Freelance" id="tenure4>
+                <label class="form-check-label" for="tenure4">
+                Freelance
+                </label>
+                </li>
+                </ul>
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Job Level</button>
+        <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                <input class="form-check-input" type="checkbox" name="work_experience[]" value="100" id="work1">
+                <label class="form-check-label" for="tenure1">
+                Internship / OJT
+                </label>
+                </li>
+                <li>
+                <input class="form-check-input" type="checkbox" name="work_experience[]" value="200" id="work2>
+                <label class="form-check-label" for="work2">
+                Fresh Grad / Entry Level
+                </label>
+                </li>
+                <li>
+                <input class="form-check-input" type="checkbox" name="work_experience[]" value="300" id="work3>
+                <label class="form-check-label" for="work3">
+                Associate / Specialis
+                </label>
+                </li>
+                <li>
+                <input class="form-check-input" type="checkbox" name="work_experience[]" value="400" id="work4>
+                <label class="form-check-label" for="work4">
+                Mid-Senior Level
+                </label>
+                </li>
+                <li>
+                <input class="form-check-input" type="checkbox" name="work_experience[]" value="500" id="work4>
+                <label class="form-check-label" for="work4">
+                Director / Executive.
+                </label>
+                </li>
+        </ul>
+        <button class="btn btn-primary" type="submit">Cari</button>
         </div>
         </form>';
     $pageHTML .= "</div>";
@@ -74,7 +140,7 @@ if($err) {
         $pageHTML .= "<div class='card border-danger m-4'> <div class='row g-0'> <div class='col-md-4 p-4'> <div class='text-center'>";
         $pageHTML .= "<img class='rounded' src='".$job->company_info->logo_small."' /> </div> </div>";
         $pageHTML .= "<div class='col-md-8'> <div class='card-body'>";
-        $pageHTML .= "<h3> <a target='_blank' href='".$url.$job->name."</a></h3>"; 
+        $pageHTML .= "<h3> <a target='_blank' href='".$url.$job->name."</a> - ".$job->tenure."</h3>"; 
         $old_date_timestamp = strtotime($job->application_end_date);
         $new_date = date('d M', $old_date_timestamp);   
         $pageHTML .= "<p  class='card-text'>Recruiter last seen ".timeago($job->es_recruiter_last_seen)."</p>";
