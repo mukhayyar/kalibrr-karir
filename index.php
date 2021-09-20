@@ -135,6 +135,7 @@ if($err) {
     $pageHTML .= "<div class='row'>";
     $pageHTML .= "<div class='container p-4'>";
 
+    if(isset($jsonObj->jobs)){
     foreach($jsonObj->jobs as $job){
         $url = "https://www.kalibrr.id/c/".$job->company->code."/jobs/".$job->id."/".$job->slug."'>";
         $pageHTML .= "<div class='card border-danger m-4'> <div class='row g-0'> <div class='col-md-4 p-4'> <div class='text-center'>";
@@ -149,6 +150,9 @@ if($err) {
         $pageHTML .= "<p class='card-text'><small class='text-muted'>Apply before: ".$new_date."</small></p> </div> </div> <div class='card-footer text-muted'>";
         $pageHTML .= "Job created at ".timeago($job->created_at);
         $pageHTML .= "</div> </div> </div>";
+    }
+    }  else {
+        $pageHTML .= "<h3 class='text-center'>Pekerjaan tidak ditemukan</h3>";
     }
     $pageHTML .= "</div>";
     $pageHTML .= "</div>";
