@@ -171,7 +171,7 @@ if($err) {
         <div class="input-group">
         <input type="text" name="text" class="form-control" placeholder="Cari Kerja">
         <div class="input-group-append">
-        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Tenure</button>
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Employment type</button>
                 <ul class="dropdown-menu checkbox-menu allow-focus">
                 <li>
                 <input class="form-check-input" type="checkbox" name="tenure[]" value="Full time" id="tenure1>
@@ -248,9 +248,10 @@ if($err) {
     foreach($jsonObj->jobs as $job){
         $url = "https://www.kalibrr.id/c/".$job->company->code."/jobs/".$job->id."/".$job->slug;
         $pageHTML .= "<div class='card border-danger m-4'> <div class='row g-0'> <div class='col-md-4 p-4'> <div class='text-center'>";
-        $pageHTML .= "<img class='rounded' src='".$job->company_info->logo_small."' /> </div> </div>";
+        $pageHTML .= "<img class='rounded' style='height:70px;' src='".$job->company_info->logo_small."' /> </div> </div>";
         $pageHTML .= "<div class='col-md-8'> <div class='card-body'>";
         $pageHTML .= "<h3><strong>".$job->name."</strong></h3>";
+        $pageHTML .= $job->company_info->name." | ".$job->google_location->address_components->city.", ".$job->google_location->address_components->country."<div></div>"; 
         if($job->company->verified_business){
             $pageHTML .= "Verified <i class='bi bi-check-circle'></i>"; 
         } else {
@@ -264,7 +265,8 @@ if($err) {
         } 
         $old_date_timestamp = strtotime($job->application_end_date);
         $new_date = date('d M Y', $old_date_timestamp);   
-        $pageHTML .= "<p  class='card-text'>".$job->qualifications."</p>";
+        // $pageHTML .= "<p  class='card-text'>".$job->qualifications."</p>";
+        $pageHTML .= "<div class='mt-2'></div>";
         $pageHTML .= "<span class='badge badge-info'>".$job->tenure."</span>";
         $pageHTML .= "<span class='badge badge-info ml-1'>".codeToJob($job->work_experience)."</span>";
         $pageHTML .= "<span class='badge badge-info ml-1'>".codeToEdu($job->education_level)."</span>";
@@ -278,7 +280,8 @@ if($err) {
     }
     $pageHTML .= "</div>";
     $pageHTML .= "</div>";
-    $pageScript = "<script src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js' integrity='sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ' crossorigin='anonymous'></script>
+    $pageScript = "
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js' integrity='sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ' crossorigin='anonymous'></script>
     ";
     echo $pageCSS.$pageHTML.$pageScript;
 }
