@@ -128,7 +128,8 @@ if($err) {
 } else {
     $jsonObj = json_decode($response);
 
-    $pageCSS = "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
+    $pageCSS = "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css'>";
 
     $pageCSS .= "<style>
     .checkbox-menu li label {
@@ -249,7 +250,18 @@ if($err) {
         $pageHTML .= "<div class='card border-danger m-4'> <div class='row g-0'> <div class='col-md-4 p-4'> <div class='text-center'>";
         $pageHTML .= "<img class='rounded' src='".$job->company_info->logo_small."' /> </div> </div>";
         $pageHTML .= "<div class='col-md-8'> <div class='card-body'>";
-        $pageHTML .= "<h3><strong>".$job->name."</strong></h3>"; 
+        $pageHTML .= "<h3><strong>".$job->name."</strong></h3>";
+        if($job->company->verified_business){
+            $pageHTML .= "Verified <i class='bi bi-check-circle'></i>"; 
+        } else {
+            $pageHTML .= "Unverified <i class='bi bi-dash-circle'></i>"; 
+        }
+        if($job->es_is_top_brand){
+            $pageHTML .= " Top Brand <i class='bi bi-award'></i>"; 
+        } 
+        if($job->is_work_from_home){
+            $pageHTML .= " Top Brand <i class='bi bi-house-door'></i>"; 
+        } 
         $old_date_timestamp = strtotime($job->application_end_date);
         $new_date = date('d M Y', $old_date_timestamp);   
         $pageHTML .= "<p  class='card-text'>".$job->qualifications."</p>";
@@ -257,8 +269,8 @@ if($err) {
         $pageHTML .= "<span class='badge badge-info ml-1'>".codeToJob($job->work_experience)."</span>";
         $pageHTML .= "<span class='badge badge-info ml-1'>".codeToEdu($job->education_level)."</span>";
         $pageHTML .= "<span class='badge badge-warning ml-1'>Apply before: ".$new_date."</span>";
-        $pageHTML .= "<div class='mt-2'></div><a class='btn btn-primary' target='_blank'  role='button' href='".$url."'>Apply</a> 
-        <a class='btn btn-secondary' target='_blank' href='".$job->company_info->url."'>Company Website</a></div> </div>";
+        $pageHTML .= "<div class='mt-2'></div><a class='btn btn-primary' target='_blank'  role='button' href='".$url."'> Apply <i class='bi bi-arrow-up-right-square'></i></a> 
+        <a class='btn btn-secondary' target='_blank' href='".$job->company_info->url."'>Company Website <i class='bi bi-globe2'></i></a></div> </div>";
         $pageHTML .= "</div> </div>";
     }
     }  else {
