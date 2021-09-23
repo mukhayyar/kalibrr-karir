@@ -251,7 +251,7 @@ if($err) {
         $pageHTML .= "<div class='col-md-8'> <div class='card-body'>";
         $pageHTML .= "<h3><strong>".$job->name."</strong></h3>"; 
         $old_date_timestamp = strtotime($job->application_end_date);
-        $new_date = date('d M', $old_date_timestamp);   
+        $new_date = date('d M Y', $old_date_timestamp);   
         $pageHTML .= "<p  class='card-text'>".$job->qualifications."</p>";
         $pageHTML .= "<span class='badge badge-info'>".$job->tenure."</span>";
         $pageHTML .= "<span class='badge badge-info ml-1'>".codeToJob($job->work_experience)."</span>";
