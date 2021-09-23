@@ -36,6 +36,73 @@ $err = curl_error($curl);
 
 curl_close($curl);
 
+function codeToJob($code)
+{
+    if($code == 100)
+    {
+        return "Internship";
+    } else if($code == 200)
+    {
+        return "Fresh Grad";
+    } else if($code == 300)
+    {
+        return "Associate";
+    } else if($code == 400)
+    {
+        return "Mid-Senior Level";
+    } else if($code == 500)
+    {
+        return "Director / Executive";
+    }
+}
+
+function codeToEdu($code)
+{
+    if($code == 100)
+    {
+        return "min. below High School";
+    } else if($code == 150)
+    {
+        return "High Scool(Pursued)";
+    } else if($code == 200)
+    {
+        return "High School(Graduated)";
+    } else if($code == 300)
+    {
+        return "Vocational Course";
+    } else if($code == 400)
+    {
+        return "Vocational Course(Completed)";
+    }
+    else if($code == 450)
+    {
+        return "Associated Degree(Completed)";
+    }
+    else if($code == 500)
+    {
+        return "Bachelor Degree(Pursued)";
+    }
+    else if($code == 550)
+    {
+        return "Bachelor Degree(Completed)";
+    }
+    else if($code == 600)
+    {
+        return "Masters Degree(Pursued)";
+    }
+    else if($code == 650)
+    {
+        return "Masters Degree(Completed)";
+    }
+    else if($code == 700)
+    {
+        return "PhD Degree(Pursued)";
+    }
+    else if($code == 750)
+    {
+        return "PhD Degree(Completed)";
+    }
+}
 
 function timeago($date) {
     $timestamp = strtotime($date);	
@@ -61,18 +128,53 @@ if($err) {
 } else {
     $jsonObj = json_decode($response);
 
-    $pageCSS = "<link href='https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU' crossorigin='anonymous'>";
+    $pageCSS = "<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>";
+
+    $pageCSS .= "<style>
+    .checkbox-menu li label {
+        display: block;
+        padding: 3px 10px;
+        clear: both;
+        font-weight: normal;
+        line-height: 1.42857143;
+        color: #333;
+        white-space: nowrap;
+        margin:0;
+        transition: background-color .4s ease;
+    }
+    .checkbox-menu li input {
+        margin: 0px 5px;
+        top: 2px;
+        position: relative;
+    }
+    
+    .checkbox-menu li.active label {
+        background-color: #cbcbff;
+        font-weight:bold;
+    }
+    
+    .checkbox-menu li label:hover,
+    .checkbox-menu li label:focus {
+        background-color: #f5f5f5;
+    }
+    
+    .checkbox-menu li.active label:hover,
+    .checkbox-menu li.active label:focus {
+        background-color: #b8b8ff;
+    }
+    </style>";
 
     $pageHTML = "<div class='container mt-4'>";
     $pageHTML .= '
         <form>
-        <div class="input-group mb-3">
+        <div class="input-group">
         <input type="text" name="text" class="form-control" placeholder="Cari Kerja">
+        <div class="input-group-append">
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Tenure</button>
-        <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-        <input class="form-check-input" type="checkbox" name="tenure[]" value="Full time" id="tenure1">
-        <label class="form-check-label" for="tenure1">
+                <ul class="dropdown-menu checkbox-menu allow-focus">
+                <li>
+                <input class="form-check-input" type="checkbox" name="tenure[]" value="Full time" id="tenure1>
+                <label class="form-check-label" for="tenure1">
                 Full time
                 </label>
                 </li>
@@ -95,10 +197,11 @@ if($err) {
                 </label>
                 </li>
                 </ul>
+        </div>
         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Job Level</button>
-        <ul class="dropdown-menu dropdown-menu-end">
+        <ul class="dropdown-menu checkbox-menu allow-focus">
                 <li>
-                <input class="form-check-input" type="checkbox" name="work_experience[]" value="100" id="work1">
+                <input class="form-check-input" type="checkbox" name="work_experience[]" value="100" id="work1>
                 <label class="form-check-label" for="tenure1">
                 Internship / OJT
                 </label>
@@ -134,22 +237,29 @@ if($err) {
     $pageHTML .= "</div>";
     $pageHTML .= "<div class='row'>";
     $pageHTML .= "<div class='container p-4'>";
+    if(isset($jsonObj->count)){
+        $pageHTML .= "<h1>Showing ".$jsonObj->count." Jobs</h1>";
+    } else {
+        $pageHTML .= "<h1>Showing 0 Jobs</h1>";
+    }
 
     if(isset($jsonObj->jobs)){
     foreach($jsonObj->jobs as $job){
-        $url = "https://www.kalibrr.id/c/".$job->company->code."/jobs/".$job->id."/".$job->slug."'>";
+        $url = "https://www.kalibrr.id/c/".$job->company->code."/jobs/".$job->id."/".$job->slug;
         $pageHTML .= "<div class='card border-danger m-4'> <div class='row g-0'> <div class='col-md-4 p-4'> <div class='text-center'>";
         $pageHTML .= "<img class='rounded' src='".$job->company_info->logo_small."' /> </div> </div>";
         $pageHTML .= "<div class='col-md-8'> <div class='card-body'>";
-        $pageHTML .= "<h3> <a target='_blank' href='".$url.$job->name."</a> - ".$job->tenure."</h3>"; 
+        $pageHTML .= "<h3><strong>".$job->name."</strong></h3>"; 
         $old_date_timestamp = strtotime($job->application_end_date);
         $new_date = date('d M', $old_date_timestamp);   
-        $pageHTML .= "<p  class='card-text'>Recruiter last seen ".timeago($job->es_recruiter_last_seen)."</p>";
-        $pageHTML .= "<p  class='card-text'>".$job->company_name." ";
-        $pageHTML .= $job->google_location->address_components->city.",".$job->google_location->address_components->country."</p>";
-        $pageHTML .= "<p class='card-text'><small class='text-muted'>Apply before: ".$new_date."</small></p> </div> </div> <div class='card-footer text-muted'>";
-        $pageHTML .= "Job created at ".timeago($job->created_at);
-        $pageHTML .= "</div> </div> </div>";
+        $pageHTML .= "<p  class='card-text'>".$job->qualifications."</p>";
+        $pageHTML .= "<span class='badge badge-info'>".$job->tenure."</span>";
+        $pageHTML .= "<span class='badge badge-info ml-1'>".codeToJob($job->work_experience)."</span>";
+        $pageHTML .= "<span class='badge badge-info ml-1'>".codeToEdu($job->education_level)."</span>";
+        $pageHTML .= "<span class='badge badge-warning ml-1'>Apply before: ".$new_date."</span>";
+        $pageHTML .= "<div class='mt-2'></div><a class='btn btn-primary' target='_blank'  role='button' href='".$url."'>Apply</a> 
+        <a class='btn btn-secondary' target='_blank' href='".$job->company_info->url."'>Company Website</a></div> </div>";
+        $pageHTML .= "</div> </div>";
     }
     }  else {
         $pageHTML .= "<h3 class='text-center'>Pekerjaan tidak ditemukan</h3>";
