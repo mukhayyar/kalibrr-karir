@@ -12,7 +12,8 @@ if($err) {
     foreach($jsonObj->jobs as $job){
         $url = "https://www.kalibrr.id/c/".$job->company->code."/jobs/".$job->id."/".$job->slug;
         $pageHTML .= "<div class='card m-4'>";
-        $pageHTML .= "<img style='height:70px;' src='".$job->company_info->logo_160x90."'/>";
+        $pageHTML .= "<div class='center'><img style='height:70px;' src='".$job->company_info->logo_160x90."'/></div>";
+        $pageHTML .= "<img id='mobile' style='height:70px;' src='".$job->company_info->logo_160x90."'/>";
         $pageHTML .= "<div class='card-body'>";
         $pageHTML .= "<h3><strong>".$job->name."</strong></h3>";
         $pageHTML .= $job->company_info->name." | ".$job->google_location->address_components->city.", ".$job->google_location->address_components->country."<div></div>"; 
