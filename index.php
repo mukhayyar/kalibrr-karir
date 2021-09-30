@@ -1,6 +1,129 @@
 <?php
-include "function.php";
-include "connection.php";
+# connection to api kalibrr
+$curl = curl_init();
+
+if(!isset($_GET["text"]))
+{
+    $textQuery = "";
+} else {
+    $textQuery = $_GET["text"];
+}
+if(!isset($_GET["tenure"]))
+{
+    $tenureQuery = "";
+} else {
+    $tenureQuery = implode(",",$_GET["tenure"]);
+}
+if(!isset($_GET["work_experience"]))
+{
+    $workQuery = "";
+} else {
+    $workQuery = implode(",",$_GET["work_experience"]);
+}
+curl_setopt_array($curl, array(
+  CURLOPT_URL => 'www.kalibrr.com/api/job_board/search?country=Indonesia&function=Legal&work_experience='.$workQuery.'&text='.$textQuery." ".$tenureQuery,
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => '',
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 0,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => 'GET',
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+# function
+function codeToJob($code)
+{
+    if($code == 100)
+    {
+        return "Internship";
+    } else if($code == 200)
+    {
+        return "Fresh Grad";
+    } else if($code == 300)
+    {
+        return "Associate";
+    } else if($code == 400)
+    {
+        return "Mid-Senior Level";
+    } else if($code == 500)
+    {
+        return "Director / Executive";
+    }
+}
+
+function codeToEdu($code)
+{
+    if($code == 100)
+    {
+        return "min. below High School";
+    } else if($code == 150)
+    {
+        return "High Scool(Pursued)";
+    } else if($code == 200)
+    {
+        return "High School(Graduated)";
+    } else if($code == 300)
+    {
+        return "Vocational Course";
+    } else if($code == 400)
+    {
+        return "Vocational Course(Completed)";
+    }
+    else if($code == 450)
+    {
+        return "Associated Degree(Completed)";
+    }
+    else if($code == 500)
+    {
+        return "Bachelor Degree(Pursued)";
+    }
+    else if($code == 550)
+    {
+        return "Bachelor Degree(Completed)";
+    }
+    else if($code == 600)
+    {
+        return "Masters Degree(Pursued)";
+    }
+    else if($code == 650)
+    {
+        return "Masters Degree(Completed)";
+    }
+    else if($code == 700)
+    {
+        return "PhD Degree(Pursued)";
+    }
+    else if($code == 750)
+    {
+        return "PhD Degree(Completed)";
+    }
+}
+
+function timeago($date) {
+    $timestamp = strtotime($date);	
+    
+    $strTime = array("second", "minute", "hour", "day", "month", "year");
+    $length = array("60","60","24","30","12","10");
+
+    $currentTime = time();
+    if($currentTime >= $timestamp) {
+         $diff     = time()- $timestamp;
+         for($i = 0; $diff >= $length[$i] && $i <  count($length)-1; $i++) {
+         $diff = $diff / $length[$i];
+         }
+
+         $diff = round($diff);
+         return $diff . " " . $strTime[$i] . "(s) ago ";
+    }
+}
+
+# write the api object to an element page 
 
 if($err) {
     if($debug) echo "cURL Error:". $err;
@@ -53,7 +176,70 @@ if($err) {
     <title>Document</title>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css'>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        .card {
+            flex-direction: row;
+        }
+        .center {
+            padding: 70px 0;
+        }
+        .card img {
+            border-top-right-radius: 0;
+            border-bottom-left-radius: calc(0.25rem - 1px);
+        }
+
+        img#mobile {
+            display: none;
+        }
+        @media screen and (max-width: 768px) {
+            .card {
+                flex-direction:column;
+                align-items: center;
+            }
+            .card img {
+                width: 50%;
+            }
+            .center {
+                display: none;
+            }
+            img#mobile {
+                display: block;
+            }
+        }
+
+
+        .checkbox-menu li label {
+            display: block;
+            padding: 3px 10px;
+            clear: both;
+            font-weight: normal;
+            line-height: 1.42857143;
+            color: #333;
+            white-space: nowrap;
+            margin:0;
+            transition: background-color .4s ease;
+        }
+        .checkbox-menu li input {
+            margin: 0px 5px;
+            top: 2px;
+            position: relative;
+        }
+
+        .checkbox-menu li.active label {
+            background-color: #cbcbff;
+            font-weight:bold;
+        }
+
+        .checkbox-menu li label:hover,
+        .checkbox-menu li label:focus {
+            background-color: #f5f5f5;
+        }
+
+        .checkbox-menu li.active label:hover,
+        .checkbox-menu li.active label:focus {
+            background-color: #b8b8ff;
+        }
+    </style>
 </head>
 <body>
     <div class='container mt-4'>
